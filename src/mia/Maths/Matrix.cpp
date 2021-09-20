@@ -2,19 +2,30 @@
 
 namespace mia
 {
+    Matrix::Matrix()
+        : m_Width(0)
+        , m_Height(0)
+        , m_Data(nullptr)
+    {
+    }
+
     Matrix::Matrix(u32 width, u32 height, f32 * data)
         : m_Width(width)
         , m_Height(height)
-        , m_Data(data)
-        , m_ManagesMemory(false)
+        , m_Data(nullptr)
     {
+        u64 const capacity = GetCapacity();
+        if (capacity > 0)
+        {
+            m_Data = new f32[capacity];
+            memcpy(m_Data, data, capacity * sizeof(f32));
+        }
     }
 
     Matrix::Matrix(u32 width, u32 height)
         : m_Width(width)
         , m_Height(height)
         , m_Data(nullptr)
-        , m_ManagesMemory(false)
     {
         u64 const capacity = GetCapacity();
         m_Data = new f32[capacity];
@@ -22,14 +33,12 @@ namespace mia
         {
             m_Data[eIdx] = 0.0f;
         }
-        m_ManagesMemory = true;
     }
 
     Matrix::Matrix(Matrix const & other)
         : m_Width(0)
         , m_Height(0)
         , m_Data(nullptr)
-        , m_ManagesMemory(false)
     {
         *this = other;
     }
@@ -38,18 +47,15 @@ namespace mia
         : m_Width(0)
         , m_Height(0)
         , m_Data(nullptr)
-        , m_ManagesMemory(false)
     {
         *this = std::move(other);
     }
 
     Matrix::~Matrix()
     {
-        if (m_ManagesMemory && (nullptr != m_Data))
+        if (nullptr != m_Data)
         {
-            delete m_Data;
-            m_Data = nullptr;
-            m_ManagesMemory = false;
+            delete[] m_Data;
         }
     }
 
@@ -58,17 +64,12 @@ namespace mia
         m_Width = other.m_Width;
         m_Height = other.m_Height;
         m_Data = nullptr;
-        m_ManagesMemory = false;
 
         u64 const capacity = GetCapacity();
         if (capacity > 0)
         {
             m_Data = new f32[capacity];
-            for (u64 eIdx = 0; eIdx < capacity; ++eIdx)
-            {
-                m_Data[eIdx] = other.m_Data[eIdx];
-            }
-            m_ManagesMemory = true;
+            memcpy(m_Data, other.m_Data, capacity * sizeof(f32));
         }
 
         return *this;
@@ -79,12 +80,10 @@ namespace mia
         m_Width = other.m_Width;
         m_Height = other.m_Height;
         m_Data = other.m_Data;
-        m_ManagesMemory = other.m_ManagesMemory;
 
         other.m_Width = 0;
         other.m_Height = 0;
         other.m_Data = nullptr;
-        other.m_ManagesMemory = false;
 
         return *this;
     }
@@ -99,14 +98,6 @@ namespace mia
         {
             m_Data[eIdx] = static_cast<f32>(rand()) / static_cast<f32>(RAND_MAX);
         }
-    }
-
-    f32 & Matrix::GetElement(u64 rowIndex, u64 heightIndex)
-    {
-        ASSERTMSG(rowIndex < m_Width, "rowIndex out of bounds!");
-        ASSERTMSG(heightIndex < m_Height, "heightIndex out of bounds!");
-
-        return m_Data[(m_Width * heightIndex) + rowIndex];
     }
 
     void Matrix::Print() const
@@ -153,12 +144,16 @@ namespace mia
         {
             for (u32 hIdx = 0; hIdx < result.GetHeight(); ++hIdx)
             {
+                u32 const aOffset = a.GetWidth() * hIdx;
+                u32 const bOffset = bTransposed.GetWidth() * rIdx;
+                u32 const resultOffset = result.GetWidth() * hIdx;
+
                 for (u32 i = 0; i < a.GetWidth(); ++i)
                 {
-                    f32 const & aVal = a.m_Data[(a.GetWidth() * hIdx) + i];
-                    f32 const & bVal = bTransposed.m_Data[(bTransposed.GetWidth() * rIdx) + i];
+                    f32 const & aVal = a.m_Data[aOffset + i];
+                    f32 const & bVal = bTransposed.m_Data[bOffset + i];
 
-                    result.m_Data[(result.GetWidth() * hIdx) + rIdx] += aVal * bVal;
+                    result.m_Data[resultOffset + rIdx] += aVal * bVal;
                 }
             }
         }
@@ -168,16 +163,55 @@ namespace mia
 
     Matrix Matrix::Transpose(Matrix const & m)
     {
-        Matrix result(m.GetHeight(), m.GetWidth());
+        Matrix result;
 
-        for (u32 hIdx = 0; hIdx < m.GetHeight(); ++hIdx)
+        if (m.GetHeight() == 1 || m.GetWidth() == 1)
         {
-            for (u32 rIdx = 0; rIdx < m.GetWidth(); ++rIdx)
+            // If m is a 1D matrix we will just make a simple copy of the matrix with
+            // the height & width values swapped.
+            result = Matrix(m.GetHeight(), m.GetWidth(), m.m_Data);
+        }
+        else
+        {
+            // If m is a 2D matrix, we will need to perform the transpose operation 
+            // on the matrix's data.
+            result = Matrix(m.GetHeight(), m.GetWidth());
+
+            for (u32 hIdx = 0; hIdx < m.GetHeight(); ++hIdx)
             {
-                result.m_Data[(result.GetWidth() * rIdx) + hIdx] = m.m_Data[(m.GetWidth() * hIdx) + rIdx];
+                for (u32 rIdx = 0; rIdx < m.GetWidth(); ++rIdx)
+                {
+                    result.m_Data[(result.GetWidth() * rIdx) + hIdx] = m.m_Data[(m.GetWidth() * hIdx) + rIdx];
+                }
             }
         }
 
         return result;
+    }
+
+    bool Matrix::operator == (Matrix const & other) const
+    {
+        if ((GetWidth() != other.GetWidth()) || (GetHeight() != other.GetHeight()))
+        {
+            return false;
+        }
+
+        for (u32 rIdx = 0; rIdx < GetWidth(); ++rIdx)
+        {
+            for (u32 hIdx = 0; hIdx < GetHeight(); ++hIdx)
+            {
+                if (GetElement(rIdx, hIdx) != other.GetElement(rIdx, hIdx))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    bool Matrix::operator != (Matrix const & other) const
+    {
+        return !(*this == other);
     }
 }

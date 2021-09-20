@@ -10,12 +10,12 @@ namespace mia
     class Matrix final
     {
     public:
-        Matrix() = delete;
+        Matrix();
         Matrix(Matrix const & other);
         Matrix(Matrix && other) noexcept;
         ~Matrix();
 
-        // Constructs a matrix of size width x height using the supplied data (this data isn't copied)
+        // Constructs a matrix of size width x height using the supplied data (this data is copied)
         Matrix(u32 width, u32 height, f32 * data);
         // Constructs a matrix of size width x height (allocates memory with each element being 0.0f)
         Matrix(u32 width, u32 height);
@@ -35,20 +35,25 @@ namespace mia
 
         // Returns the element associated with the supplied row index & height index
         f32 & GetElement(u64 rowIndex, u64 heightIndex);
+        f32 const & GetElement(u64 rowIndex, u64 heightIndex) const;
 
         // Prints the matrix to the standard input/output stream
         void Print() const;
 
-        // Multiplies matrix a by matrix b and returns the result
+        // Multiplies matrix a by matrix b and returns the result. Both a & b are expected to be
+        // row-majored as the supplied matrix b will be transposed during the multiply for better
+        // cache-miss performance.
         static Matrix Multiply(Matrix const & a, Matrix const & b);
         // Transposes the supplied matrix and returns the result
         static Matrix Transpose(Matrix const & m);
+
+        bool operator == (Matrix const & other) const;
+        bool operator != (Matrix const & other) const;
 
     private:
         u32 m_Width;
         u32 m_Height;
         f32 * m_Data;
-        flag m_ManagesMemory;
     };
 
     inline u32 Matrix::GetWidth() const
@@ -64,5 +69,21 @@ namespace mia
     inline u64 Matrix::GetCapacity() const
     {
         return static_cast<u64>(m_Width) * static_cast<u64>(m_Height);
+    }
+
+    inline f32 & Matrix::GetElement(u64 rowIndex, u64 heightIndex)
+    {
+        ASSERTMSG(rowIndex < m_Width, "rowIndex out of bounds!");
+        ASSERTMSG(heightIndex < m_Height, "heightIndex out of bounds!");
+
+        return m_Data[(m_Width * heightIndex) + rowIndex];
+    }
+
+    inline f32 const & Matrix::GetElement(u64 rowIndex, u64 heightIndex) const
+    {
+        ASSERTMSG(rowIndex < m_Width, "rowIndex out of bounds!");
+        ASSERTMSG(heightIndex < m_Height, "heightIndex out of bounds!");
+
+        return m_Data[(m_Width * heightIndex) + rowIndex];
     }
 }
