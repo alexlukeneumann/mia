@@ -33,6 +33,10 @@ namespace mia
 
         // Initialise the m_Values matrix
         m_Values = Matrix(1, capacity);
+
+        // Specifically mark biases & weights to be empty as the Flatten layer doens't use them.
+        m_Biases = Matrix();
+        m_Weights = Matrix();
     }
 
     void Flatten::SetInputData(NDArrayView<f32> const & inputData)

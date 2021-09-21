@@ -9,6 +9,11 @@ namespace mia
             return layer.m_Weights;
         }
 
+        Matrix & LayerManipulator::GetBiasesMatrix(Layer & layer)
+        {
+            return layer.m_Biases;
+        }
+
         Matrix & LayerManipulator::GetValuesMatrix(Layer & layer)
         {
             return layer.m_Values;

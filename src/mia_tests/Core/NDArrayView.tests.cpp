@@ -8,8 +8,6 @@ namespace mia
 {
     namespace Tests
     {
-        #define LENGTHOF(a) sizeof(a) / sizeof(*a)
-
         TEST_CLASS(NDArrayViewTests)
         {
         public:

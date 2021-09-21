@@ -42,6 +42,9 @@ namespace mia
 
 #endif
 
+    // Returns the number of elements in a c-style array
+    #define LENGTHOF(x) static_cast<mia::u64>(sizeof(x) / sizeof(*x))
+
     // This seed value should be used when requiring a seed. Enables a single point of 
     // change across the library for debugging purposes.
     static u32 const c_SeedValue = static_cast<u32>(time(NULL));

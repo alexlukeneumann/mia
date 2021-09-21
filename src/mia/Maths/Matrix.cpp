@@ -123,6 +123,22 @@ namespace mia
         memcpy(dst, data, length * sizeof(f32));
     }
 
+    Matrix Matrix::Add(Matrix const & a, Matrix const & b)
+    {
+        ASSERTMSG(a.GetWidth() == b.GetWidth(), "Cannot add matrix a & b. Invalid dimensions.");
+        ASSERTMSG(a.GetHeight() == b.GetHeight(), "Cannot add matrix a & b. Invalid dimensions.");
+
+        Matrix result(a.GetWidth(), b.GetHeight());
+
+        u64 const capacity = a.GetCapacity();
+        for (u64 eIdx = 0; eIdx < capacity; ++eIdx)
+        {
+            result.m_Data[eIdx] = a.m_Data[eIdx] + b.m_Data[eIdx];
+        }
+
+        return result;
+    }
+
     void Matrix::Print() const
     {
         u64 const capacity = GetCapacity();

@@ -402,6 +402,38 @@ namespace mia
                 Assert::IsFalse(a == b);
                 Assert::IsTrue(a != b);
             }
+
+            TEST_METHOD(CanAdd_SameDimensions)
+            {
+                u32 const width = 3;
+                u32 const height = 2;
+
+                f32 aValues[] = {
+                    1.0f, 2.0f, 3.0f,
+                    4.0f, 5.0f, 6.0f
+                };
+
+                f32 bValues[] = {
+                    9.0f, 8.0f, 7.0f,
+                    6.0f, 5.0f, 4.0f
+                };
+
+                Matrix a(width, height, aValues);
+                Matrix b(width, height, bValues);
+
+                Matrix result = Matrix::Add(a, b);
+
+                Assert::AreEqual(width, result.GetWidth());
+                Assert::AreEqual(height, result.GetHeight());
+
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
+                {
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
+                    {
+                        Assert::AreEqual(10.0f, result.GetElement(rIdx, cIdx));
+                    }
+                }
+            }
         };
     }
 }

@@ -47,6 +47,9 @@ namespace mia
         static Matrix Multiply(Matrix const & a, Matrix const & b);
         // Transposes the supplied matrix and returns the result
         static Matrix Transpose(Matrix const & m);
+        // Adds matrix a & b together and returns the result. Both a & b are expected to be the
+        // exact same dimensions.
+        static Matrix Add(Matrix const & a, Matrix const & b);
 
         bool operator == (Matrix const & other) const;
         bool operator != (Matrix const & other) const;

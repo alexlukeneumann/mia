@@ -19,7 +19,7 @@ namespace mia
             static f32 constexpr c_Precision = 1e-3f;
 
         public:
-            TEST_METHOD(BaseExecute_CalculatesTheCorrectSummationOfDotProducts_ForEachNeuron)
+            TEST_METHOD(BaseExecute_CalculatesTheCorrectSummationOfDotProducts_AndAddsBias_ForEachNeuron)
             {
                 TestLayer prevLayer;
                 TestLayer layer;
@@ -41,13 +41,21 @@ namespace mia
                 };
                 layerWeights = Matrix(3, 2, weights);
 
+                // Initialise the layer's neuron biases matrix.
+                Matrix & layerBiases = LayerManipulator::GetBiasesMatrix(layer);
+                f32 biases[] = {
+                    20.0f,
+                    10.0f
+                };
+                layerBiases = Matrix(1, 2, biases);
+
                 // Execute the layer
                 layer.Execute(&prevLayer);
 
                 // Check the resulting values are as expected
                 f32 const expectedValues[] = {
-                    24.5f,  /* (1.5 * 5.0) + (0.5 * 6.0) + (2.0 * 7.0) */
-                    39.5f   /* (2.5 * 5.0) + (1.0 * 6.0) + (3.0 * 7.0) */
+                    44.5f,  /* (1.5 * 5.0) + (0.5 * 6.0) + (2.0 * 7.0) + 20.0f */
+                    49.5f   /* (2.5 * 5.0) + (1.0 * 6.0) + (3.0 * 7.0) + 10.0f */
                 };
 
                 Matrix const & calculatedValues = layer.GetValues();

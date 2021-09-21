@@ -31,7 +31,9 @@ namespace mia
         // Returns the matrix representing the connections between this layer and the previous
         // layer. These connections are denoted by a weight value.
         Matrix const & GetWeights() const;
-        // Returns the matrix representing the computed neuron values for this layer.
+        // Returns the 1D matrix representing the bias value for each neuron in this layer.
+        Matrix const & GetBiases() const;
+        // Returns the 1D matrix representing the computed neuron values for this layer.
         Matrix const & GetValues() const;
 
     protected:
@@ -56,8 +58,14 @@ namespace mia
         // as all three neurons in the previous layer are connected to the second neuron in this layer.
         Matrix m_Weights;
 
+        // A matrix storing the bias value for each neuron in this particular layer.
+        // This matrix is always expected to be one-dimensional in the height axis... i.e. Matrix(width: 1, height: n).
+        // This allows for easily adding each neuron's bias value the computed value for the neuron...
+        // i.e. Matrix::Add(m_Values, m_Biases)
+        Matrix m_Biases;
+
         // A matrix storing the previous layer's neuron values multiplied by m_Weights structure.
-        // This matrix is always expected to be one-dimensional in height axis... i.e. Matrix(width: 1, height: n).
+        // This matrix is always expected to be one-dimensional in the height axis... i.e. Matrix(width: 1, height: n).
         // This allows for applying the summation, for a particular neuron, of the dot product of a previous neuron
         // and its weight easily... i.e. Matrix::Multiply(m_Weights, prevLayer.m_Values) 
         Matrix m_Values;
@@ -71,6 +79,11 @@ namespace mia
         return m_Weights;
     }
 
+    inline Matrix const & Layer::GetBiases() const
+    {
+        return m_Biases;
+    }
+
     inline Matrix const & Layer::GetValues() const
     {
         return m_Values;
@@ -78,11 +91,18 @@ namespace mia
 
     inline void Layer::Execute(Layer const * prevLayer)
     {
-        // Base implemention:
-        // Just need to multiply the pre-filled m_Weights structure by the prevLayer's
-        // already calculated m_Values structure.
         ASSERTMSG(nullptr != prevLayer, "prevLayer is not a valid ptr.");
+
+        // Base implemention:
+        // - Multiply the pre-filled m_Weights structure by the prevLayer's
+        // already calculated m_Values structure.
+        // - Add the m_Biases matrix to the m_Values structure
+        //
+        // The above two steps essentially summates the dot product of each neuron,
+        // in the previous layer, connected to a particular neuron with its weight and
+        // then adds the neuron's particular bias value to the final value for the neuron.
         m_Values = Matrix::Multiply(m_Weights, prevLayer->GetValues());
+        m_Values = Matrix::Add(m_Values, m_Biases);
     }
 
     inline u32 Layer::GetNumNeurons() const

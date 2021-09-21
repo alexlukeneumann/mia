@@ -18,5 +18,9 @@ namespace mia
         // Reserve space in the m_Weights matrix & seed it
         m_Weights = Matrix(prevLayer->GetNumNeurons(), m_NumNeurons);
         m_Weights.Seed(seedValue);
+
+        // Reserve space in the m_Biases matrix & seed it
+        m_Biases = Matrix(1, m_NumNeurons);
+        m_Biases.Seed(seedValue);
     }
 }
