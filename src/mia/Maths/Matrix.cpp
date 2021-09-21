@@ -100,6 +100,29 @@ namespace mia
         }
     }
 
+    void Matrix::Copy(u32 rowIndex, u32 colIndex, f32 const * data, u32 length)
+    {
+        ASSERTMSG(rowIndex < m_Width, "rowIndex is out of bounds.");
+        ASSERTMSG(colIndex < m_Height, "colIndex is out of bounds.");
+        
+        if (m_Width == 1)
+        {
+            // If the matrix is one dimensional (in height) then we can treat it as one dimensional in width
+            ASSERTMSG(colIndex + length <= m_Height, "length of the supplied data is out of bounds.");
+
+            u32 tmp = colIndex;
+            colIndex = rowIndex;
+            rowIndex = tmp;
+        }
+        else
+        {
+            ASSERTMSG(colIndex + length <= m_Width, "length of the supplied data is out of bounds.");
+        }
+
+        f32 * dst = &GetElement(rowIndex, colIndex);
+        memcpy(dst, data, length * sizeof(f32));
+    }
+
     void Matrix::Print() const
     {
         u64 const capacity = GetCapacity();
@@ -140,20 +163,20 @@ namespace mia
         // Transpose b to reduce cache misses on large matrices
         Matrix bTransposed = Matrix::Transpose(b);
 
-        for (u32 rIdx = 0; rIdx < result.GetWidth(); ++rIdx)
+        for (u32 cIdx = 0; cIdx < result.GetWidth(); ++cIdx)
         {
-            for (u32 hIdx = 0; hIdx < result.GetHeight(); ++hIdx)
+            for (u32 rIdx = 0; rIdx < result.GetHeight(); ++rIdx)
             {
-                u32 const aOffset = a.GetWidth() * hIdx;
-                u32 const bOffset = bTransposed.GetWidth() * rIdx;
-                u32 const resultOffset = result.GetWidth() * hIdx;
+                u32 const aOffset = a.GetWidth() * rIdx;
+                u32 const bOffset = bTransposed.GetWidth() * cIdx;
+                u32 const resultOffset = result.GetWidth() * rIdx;
 
                 for (u32 i = 0; i < a.GetWidth(); ++i)
                 {
                     f32 const & aVal = a.m_Data[aOffset + i];
                     f32 const & bVal = bTransposed.m_Data[bOffset + i];
 
-                    result.m_Data[resultOffset + rIdx] += aVal * bVal;
+                    result.m_Data[resultOffset + cIdx] += aVal * bVal;
                 }
             }
         }
@@ -177,11 +200,11 @@ namespace mia
             // on the matrix's data.
             result = Matrix(m.GetHeight(), m.GetWidth());
 
-            for (u32 hIdx = 0; hIdx < m.GetHeight(); ++hIdx)
+            for (u32 rIdx = 0; rIdx < m.GetHeight(); ++rIdx)
             {
-                for (u32 rIdx = 0; rIdx < m.GetWidth(); ++rIdx)
+                for (u32 cIdx = 0; cIdx < m.GetWidth(); ++cIdx)
                 {
-                    result.m_Data[(result.GetWidth() * rIdx) + hIdx] = m.m_Data[(m.GetWidth() * hIdx) + rIdx];
+                    result.m_Data[(result.GetWidth() * cIdx) + rIdx] = m.m_Data[(m.GetWidth() * rIdx) + cIdx];
                 }
             }
         }
@@ -196,11 +219,11 @@ namespace mia
             return false;
         }
 
-        for (u32 rIdx = 0; rIdx < GetWidth(); ++rIdx)
+        for (u32 rIdx = 0; rIdx < GetHeight(); ++rIdx)
         {
-            for (u32 hIdx = 0; hIdx < GetHeight(); ++hIdx)
+            for (u32 cIdx = 0; cIdx < GetWidth(); ++cIdx)
             {
-                if (GetElement(rIdx, hIdx) != other.GetElement(rIdx, hIdx))
+                if (GetElement(rIdx, cIdx) != other.GetElement(rIdx, cIdx))
                 {
                     return false;
                 }

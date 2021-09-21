@@ -2,12 +2,6 @@
 
 namespace mia
 {
-    Flatten::Flatten()
-        : m_InputNumDimensions(0)
-        , m_InputDimensionLengths(nullptr)
-    {
-    }
-
     Flatten::~Flatten()
     {
         if (nullptr != m_InputDimensionLengths)
@@ -25,7 +19,7 @@ namespace mia
         memcpy(m_InputDimensionLengths, inputDimensionLengths.begin(), m_InputNumDimensions * sizeof(u32));
     }
 
-    void Flatten::Compile(Layer const * prevLayer)
+    void Flatten::Compile(u32 seedValue, Layer const * prevLayer)
     {
         ASSERTMSG(prevLayer == nullptr, "Flatten layer cannot be used superceding another 1D layer.");
 
@@ -56,12 +50,12 @@ namespace mia
         }
 
         // Copy data into the m_Values matrix
-        u32 matrixOffset = 0;
+        u32 columnOffset = 0;
         for (u32 dIdx = 0; dIdx < inputData.GetNumDimensions(); ++dIdx)
         {
             NDArrayViewElement<f32> const & elementView = inputData.GetDimension(dIdx);
-            memcpy(&m_Values.GetElement(0, matrixOffset), elementView.data, elementView.length * sizeof(f32));
-            matrixOffset += elementView.length;
+            m_Values.Copy(0, columnOffset, elementView.data, elementView.length * sizeof(f32));
+            columnOffset += elementView.length;
         }
     }
 }

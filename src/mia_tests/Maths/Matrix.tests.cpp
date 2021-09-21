@@ -20,11 +20,11 @@ namespace mia
 
                 Matrix m(width, height);
 
-                for (u32 rIdx = 0; rIdx < width; ++rIdx)
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < height; ++hIdx)
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
                     {
-                        Assert::AreEqual(0.0f, m.GetElement(rIdx, hIdx));
+                        Assert::AreEqual(0.0f, m.GetElement(rIdx, cIdx));
                     }
                 }
             }
@@ -42,11 +42,11 @@ namespace mia
 
                 Matrix m(width, height, array);
 
-                for (u32 rIdx = 0; rIdx < width; ++rIdx)
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < height; ++hIdx)
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
                     {
-                        Assert::AreEqual(array[(width * hIdx) + rIdx], m.GetElement(rIdx, hIdx));
+                        Assert::AreEqual(array[(width * rIdx) + cIdx], m.GetElement(rIdx, cIdx));
                     }
                 }
 
@@ -69,11 +69,11 @@ namespace mia
                 Assert::AreEqual(m.GetWidth(), mCopy.GetWidth());
                 Assert::AreEqual(m.GetHeight(), mCopy.GetHeight());
 
-                for (u32 rIdx = 0; rIdx < width; ++rIdx)
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < height; ++hIdx)
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
                     {
-                        Assert::AreEqual(array[(width * hIdx) + rIdx], mCopy.GetElement(rIdx, hIdx));
+                        Assert::AreEqual(array[(width * rIdx) + cIdx], mCopy.GetElement(rIdx, cIdx));
                     }
                 }
 
@@ -98,11 +98,11 @@ namespace mia
                 Assert::AreEqual(static_cast<u32>(0), m.GetWidth());
                 Assert::AreEqual(static_cast<u32>(0), m.GetHeight());
 
-                for (u32 rIdx = 0; rIdx < width; ++rIdx)
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < height; ++hIdx)
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
                     {
-                        Assert::AreEqual(array[(width * hIdx) + rIdx], mMove.GetElement(rIdx, hIdx));
+                        Assert::AreEqual(array[(width * rIdx) + cIdx], mMove.GetElement(rIdx, cIdx));
                     }
                 }
             }
@@ -114,11 +114,11 @@ namespace mia
 
                 Matrix m(width, height);
 
-                for (u32 rIdx = 0; rIdx < width; ++rIdx)
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < height; ++hIdx)
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
                     {
-                        Assert::AreEqual(0.0f, m.GetElement(rIdx, hIdx));
+                        Assert::AreEqual(0.0f, m.GetElement(rIdx, cIdx));
                     }
                 }
 
@@ -130,6 +130,57 @@ namespace mia
 
                 Assert::AreEqual(val01, m.GetElement(0, 1));
                 Assert::AreEqual(val10, m.GetElement(1, 0));
+            }
+
+            TEST_METHOD(CanCopyValuesIntoMatrix_DifferentDimensions)
+            {
+                u32 const width = 3;
+                u32 const height = 2;
+
+                Matrix m(width, height);
+
+                f32 data[] = { 2.0f, 3.0f, 4.0f };
+
+                m.Copy(1, 0, data, width);
+
+                f32 const expected[] = {
+                    0.0f, 0.0f, 0.0f,   // Matrix should be prefilled to zero on construction
+                    2.0f, 3.0f, 4.0f
+                };
+
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
+                {
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
+                    {
+                        Assert::AreEqual(expected[(width * rIdx) + cIdx], m.GetElement(rIdx, cIdx));
+                    }
+                }
+            }
+
+            TEST_METHOD(CanCopyValuesIntoMatrix_SameDimensions)
+            {
+                u32 const width = 3;
+                u32 const height = 3;
+
+                Matrix m(width, height);
+
+                f32 data[] = { 2.0f, 3.0f, 4.0f };
+
+                m.Copy(2, 0, data, width);
+
+                f32 const expected[] = {
+                    0.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f,
+                    2.0f, 3.0f, 4.0f
+                };
+
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
+                {
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
+                    {
+                        Assert::AreEqual(expected[(width * rIdx) + cIdx], m.GetElement(rIdx, cIdx));
+                    }
+                }
             }
 
             TEST_METHOD(CanMultiply_TwoMatrices_SameDimensions)
@@ -160,12 +211,12 @@ namespace mia
 
                 Matrix result = Matrix::Multiply(a, b);
 
-                for (u32 rIdx = 0; rIdx < width; ++rIdx)
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < height; ++hIdx)
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
                     {
-                        f32 const & expectedValue = expected[(width * hIdx) + rIdx];
-                        f32 const & calculatedValue = result.GetElement(rIdx, hIdx);
+                        f32 const & expectedValue = expected[(width * rIdx) + cIdx];
+                        f32 const & calculatedValue = result.GetElement(rIdx, cIdx);
 
                         Assert::IsTrue(abs(expectedValue - calculatedValue) < c_Precision);
                     }
@@ -208,12 +259,12 @@ namespace mia
                 Assert::AreEqual(resultWidth, result.GetWidth());
                 Assert::AreEqual(resultHeight, result.GetHeight());
 
-                for (u32 rIdx = 0; rIdx < resultWidth; ++rIdx)
+                for (u32 rIdx = 0; rIdx < resultHeight; ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < resultHeight; ++hIdx)
+                    for (u32 cIdx = 0; cIdx < resultWidth; ++cIdx)
                     {
-                        f32 const & expectedValue = expected[(resultWidth * hIdx) + rIdx];
-                        f32 const & calculatedValue = result.GetElement(rIdx, hIdx);
+                        f32 const & expectedValue = expected[(resultWidth * rIdx) + cIdx];
+                        f32 const & calculatedValue = result.GetElement(rIdx, cIdx);
 
                         Assert::IsTrue(abs(expectedValue - calculatedValue) < c_Precision);
                     }
@@ -241,7 +292,7 @@ namespace mia
 
                 for (u32 rIdx = 0; rIdx < mTransposed.GetWidth(); ++rIdx)
                 {
-                    Assert::AreEqual(expected[rIdx], mTransposed.GetElement(rIdx, 0));
+                    Assert::AreEqual(expected[rIdx], mTransposed.GetElement(0, rIdx));
                 }
             }
 
@@ -268,11 +319,11 @@ namespace mia
                 Assert::AreEqual(width, mTransposed.GetWidth());
                 Assert::AreEqual(height, mTransposed.GetHeight());
 
-                for (u32 rIdx = 0; rIdx < mTransposed.GetWidth(); ++rIdx)
+                for (u32 rIdx = 0; rIdx < mTransposed.GetHeight(); ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < mTransposed.GetHeight(); ++hIdx)
+                    for (u32 cIdx = 0; cIdx < mTransposed.GetWidth(); ++cIdx)
                     {
-                        Assert::AreEqual(expected[(mTransposed.GetWidth() * hIdx) + rIdx], mTransposed.GetElement(rIdx, hIdx));
+                        Assert::AreEqual(expected[(mTransposed.GetWidth() * rIdx) + cIdx], mTransposed.GetElement(rIdx, cIdx));
                     }
                 }
             }
@@ -301,11 +352,11 @@ namespace mia
                 Assert::AreEqual(height, mTransposed.GetWidth());
                 Assert::AreEqual(width, mTransposed.GetHeight());
 
-                for (u32 rIdx = 0; rIdx < mTransposed.GetWidth(); ++rIdx)
+                for (u32 rIdx = 0; rIdx < mTransposed.GetHeight(); ++rIdx)
                 {
-                    for (u32 hIdx = 0; hIdx < mTransposed.GetHeight(); ++hIdx)
+                    for (u32 cIdx = 0; cIdx < mTransposed.GetWidth(); ++cIdx)
                     {
-                        Assert::AreEqual(expected[(mTransposed.GetWidth() * hIdx) + rIdx], mTransposed.GetElement(rIdx, hIdx));
+                        Assert::AreEqual(expected[(mTransposed.GetWidth() * rIdx) + cIdx], mTransposed.GetElement(rIdx, cIdx));
                     }
                 }
             }

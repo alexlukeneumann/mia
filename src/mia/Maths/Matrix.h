@@ -2,8 +2,6 @@
 
 #include "Common.h"
 
-#include <time.h>
-
 namespace mia
 {
     // Represents a 2D array of f32 data of arbitary size (row-major).
@@ -24,7 +22,10 @@ namespace mia
         Matrix & operator = (Matrix && other) noexcept;
 
         // Fills the matrix with random values between 0 & 1 based on the supplied seed 
-        void Seed(u32 seed = time(NULL));
+        void Seed(u32 seed);
+
+        // Copies the supplied data within the matrix in a row-majored fashion.
+        void Copy(u32 rowIndex, u32 colIndex, f32 const * data, u32 length);
 
         // Returns the width of the matrix
         u32 GetWidth() const;
@@ -34,8 +35,8 @@ namespace mia
         u64 GetCapacity() const;
 
         // Returns the element associated with the supplied row index & height index
-        f32 & GetElement(u64 rowIndex, u64 heightIndex);
-        f32 const & GetElement(u64 rowIndex, u64 heightIndex) const;
+        f32 & GetElement(u64 rowIndex, u64 colIndex);
+        f32 const & GetElement(u64 rowIndex, u64 colIndex) const;
 
         // Prints the matrix to the standard input/output stream
         void Print() const;
@@ -71,19 +72,19 @@ namespace mia
         return static_cast<u64>(m_Width) * static_cast<u64>(m_Height);
     }
 
-    inline f32 & Matrix::GetElement(u64 rowIndex, u64 heightIndex)
+    inline f32 & Matrix::GetElement(u64 rowIndex, u64 colIndex)
     {
-        ASSERTMSG(rowIndex < m_Width, "rowIndex out of bounds!");
-        ASSERTMSG(heightIndex < m_Height, "heightIndex out of bounds!");
+        ASSERTMSG(rowIndex < m_Height, "rowIndex out of bounds!");
+        ASSERTMSG(colIndex < m_Width, "colIndex out of bounds!");
 
-        return m_Data[(m_Width * heightIndex) + rowIndex];
+        return m_Data[(m_Width * rowIndex) + colIndex];
     }
 
-    inline f32 const & Matrix::GetElement(u64 rowIndex, u64 heightIndex) const
+    inline f32 const & Matrix::GetElement(u64 rowIndex, u64 colIndex) const
     {
-        ASSERTMSG(rowIndex < m_Width, "rowIndex out of bounds!");
-        ASSERTMSG(heightIndex < m_Height, "heightIndex out of bounds!");
+        ASSERTMSG(rowIndex < m_Height, "rowIndex out of bounds!");
+        ASSERTMSG(colIndex < m_Width, "colIndex out of bounds!");
 
-        return m_Data[(m_Width * heightIndex) + rowIndex];
+        return m_Data[(m_Width * rowIndex) + colIndex];
     }
 }

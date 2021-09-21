@@ -11,7 +11,7 @@ namespace mia
         class TestLayer : public Layer
         {
         public:
-            virtual void Compile(Layer const * prevLayer) {}
+            virtual void Compile(u32 seedValue, Layer const * prevLayer) {}
         };
 
         TEST_CLASS(LayerTests)
@@ -51,9 +51,9 @@ namespace mia
                 };
 
                 Matrix const & calculatedValues = layer.GetValues();
-                for (u64 hIdx = 0; hIdx < calculatedValues.GetHeight(); ++hIdx)
+                for (u64 rIdx = 0; rIdx < calculatedValues.GetHeight(); ++rIdx)
                 {
-                    Assert::IsTrue(abs(calculatedValues.GetElement(0, hIdx) - expectedValues[hIdx]) < c_Precision);
+                    Assert::IsTrue(abs(calculatedValues.GetElement(rIdx, 0) - expectedValues[rIdx]) < c_Precision);
                 }
             }
         };

@@ -11,22 +11,24 @@ namespace mia
     {
         TEST_CLASS(FlattenTests)
         {
+            static u32 constexpr c_TestSeedValue = 0;
+
         public:
             TEST_METHOD(Compile_ReservesCorrectSpaceInValuesMatrix)
             {
                 u32 const numDimensions = 3;
                 Flatten layer({3, 3, 2});
 
-                Assert::AreEqual(static_cast<u64>(0), layer.GetNumNeurons());
+                Assert::AreEqual(static_cast<u32>(0), layer.GetNumNeurons());
 
-                layer.Compile(nullptr);
+                layer.Compile(c_TestSeedValue, nullptr);
 
                 Matrix const & valuesMatrix = layer.GetValues();
-                u64 expectedNumNeurons = 3 * 3 * 2;
-                Assert::AreEqual(expectedNumNeurons, valuesMatrix.GetCapacity());
+                u32 const expectedNumNeurons = 3 * 3 * 2;
+                Assert::AreEqual(expectedNumNeurons, layer.GetNumNeurons());
+                Assert::AreEqual(expectedNumNeurons, static_cast<u32>(valuesMatrix.GetCapacity()));
                 Assert::AreEqual(static_cast<u32>(expectedNumNeurons), valuesMatrix.GetHeight());
                 Assert::AreEqual(static_cast<u32>(1), valuesMatrix.GetWidth());
-                Assert::AreEqual(expectedNumNeurons, layer.GetNumNeurons());
             }
 
             TEST_METHOD(SetInputData_PopulatesValuesMatrixCorrectly)
@@ -35,9 +37,9 @@ namespace mia
                 u32 const numDimensions = 3;
                 Flatten layer({3, 3, 2});
 
-                Assert::AreEqual(static_cast<u64>(0), layer.GetNumNeurons());
+                Assert::AreEqual(static_cast<u32>(0), layer.GetNumNeurons());
 
-                layer.Compile(nullptr);
+                layer.Compile(c_TestSeedValue, nullptr);
 
                 // Create input data
                 f32 xData[] = { 2.0f, 3.0f, 4.0f };
@@ -64,7 +66,7 @@ namespace mia
 
                     for (u32 eIdx = 0; eIdx < viewElement.length; ++eIdx)
                     {
-                        Assert::AreEqual(valuesMatrix.GetElement(0, matrixOffset), viewElement.data[eIdx]);
+                        Assert::AreEqual(valuesMatrix.GetElement(matrixOffset, 0), viewElement.data[eIdx]);
                         matrixOffset++;
                     }
                 }
@@ -76,9 +78,9 @@ namespace mia
                 u32 const numDimensions = 3;
                 Flatten layer({3, 3, 2});
 
-                Assert::AreEqual(static_cast<u64>(0), layer.GetNumNeurons());
+                Assert::AreEqual(static_cast<u32>(0), layer.GetNumNeurons());
 
-                layer.Compile(nullptr);
+                layer.Compile(c_TestSeedValue, nullptr);
 
                 // Check execute doesn't touch values matrix
                 Matrix prevValues = layer.GetValues();

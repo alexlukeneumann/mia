@@ -18,7 +18,7 @@ namespace mia
         virtual ~Layer() = default;
 
         // Sets up the layer.
-        virtual void Compile(Layer const * prevLayer) = 0;
+        virtual void Compile(u32 seedValue, Layer const * prevLayer) = 0;
 
         // Executes the current layers operation on the supplied previous layer and stores
         // the computed values within the m_Values matrix.
@@ -26,7 +26,7 @@ namespace mia
 
         // Returns the number of neurons in the layer.
         // This is computed at construction time of the layer.
-        u64 GetNumNeurons() const;
+        u32 GetNumNeurons() const;
 
         // Returns the matrix representing the connections between this layer and the previous
         // layer. These connections are denoted by a weight value.
@@ -41,18 +41,18 @@ namespace mia
         // 
         // i.e.
         // 
-        //     m_Weights       Prev Layer Neuron Values
-        //  ---------------           -------
-        //  | 1.0 0.5 1.5 |           | 4.0 |
-        //  | 0.5 1.0 2.0 |     x     | 2.4 |
-        //  ---------------           | 1.3 |
+        //     m_Weights       Prev Layer Neuron Values     This Layer Neuron Values
+        //  ---------------           -------                       ------
+        //  | 1.0 0.5 1.5 |           | 4.0 |                       | n0 |
+        //  | 0.5 1.0 2.0 |     x     | 2.4 |           =           | n1 |
+        //  ---------------           | 1.3 |                       ------
         //                            -------
         // 
         // This layer represents a dense layer where every neuron in the previous layer is connected to each
         // neuron in this layer. Therefore, this layer has two neurons.
         // 
         // With this setup, the value of the second neuron would be:
-        // N1 = (0.5 * 4.0) + (1.0 * 2.4) + (2.0 * 1.3)
+        // n1 = (0.5 * 4.0) + (1.0 * 2.4) + (2.0 * 1.3)
         // as all three neurons in the previous layer are connected to the second neuron in this layer.
         Matrix m_Weights;
 
@@ -85,8 +85,8 @@ namespace mia
         m_Values = Matrix::Multiply(m_Weights, prevLayer->GetValues());
     }
 
-    inline u64 Layer::GetNumNeurons() const
+    inline u32 Layer::GetNumNeurons() const
     {
-        return m_Values.GetCapacity();
+        return static_cast<u32>(m_Values.GetCapacity());
     }
 }

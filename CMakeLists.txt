@@ -27,6 +27,8 @@ set(MIA_LAYERS_FILES
   src/mia/Layers/InputLayer.h
   src/mia/Layers/Flatten.h
   src/mia/Layers/Flatten.cpp
+  src/mia/Layers/Dense.h
+  src/mia/Layers/Dense.cpp
 )
 
 SOURCE_GROUP(src FILES ${MIA_SRC_FILES})
@@ -63,11 +65,15 @@ set(MIA_MATHS_TEST_FILES
 set(MIA_LAYERS_TEST_FILES
   src/mia_tests/Layers/Layer.tests.cpp
   src/mia_tests/Layers/Flatten.tests.cpp
+  src/mia_tests/Layers/Dense.tests.cpp
 )
 
 set(MIA_LAYERS_HELPERS_TEST_FILES
   src/mia_tests/Layers/Helpers/LayerManipulator.h
   src/mia_tests/Layers/Helpers/LayerManipulator.cpp
+  src/mia_tests/Layers/Helpers/TestInputLayer.h
+  src/mia_tests/Layers/Helpers/TestInputLayer.cpp
+  src/mia_tests/Layers/Helpers/TestInputLayer.tests.cpp
 )
 
 SOURCE_GROUP(src/Core FILES ${MIA_CORE_TEST_FILES})

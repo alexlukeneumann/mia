@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <iostream>
 #include <initializer_list>
+#include <time.h>
 
 namespace mia
 {
@@ -40,4 +41,8 @@ namespace mia
 #define ASSERTMSG(cond, msg)
 
 #endif
+
+    // This seed value should be used when requiring a seed. Enables a single point of 
+    // change across the library for debugging purposes.
+    static u32 const c_SeedValue = static_cast<u32>(time(NULL));
 }
