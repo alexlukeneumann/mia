@@ -9,6 +9,12 @@ namespace mia
         class LayerManipulator;
     }
 
+    enum class LayerType : u8
+    {
+        Generic,
+        Input
+    };
+
     class Layer
     {
     public:
@@ -23,6 +29,9 @@ namespace mia
         // Executes the current layers operation on the supplied previous layer and stores
         // the computed values within the m_Values matrix.
         virtual void Execute(Layer const * prevLayer);
+
+        // Returns the type of this layer.
+        virtual LayerType GetType() const { return LayerType::Generic; }
 
         // Returns the number of neurons in the layer.
         // This is computed at construction time of the layer.

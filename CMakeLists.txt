@@ -31,16 +31,24 @@ set(MIA_LAYERS_FILES
   src/mia/Layers/Dense.cpp
 )
 
+set(MIA_MODELS_FILES
+  src/mia/Models/Model.h
+  src/mia/Models/Sequential.h
+  src/mia/Models/Sequential.cpp
+)
+
 SOURCE_GROUP(src FILES ${MIA_SRC_FILES})
 SOURCE_GROUP(src/Maths FILES ${MIA_MATH_FILES})
 SOURCE_GROUP(src/Core FILES ${MIA_CORE_FILES})
 SOURCE_GROUP(src/Layers FILES ${MIA_LAYERS_FILES})
+SOURCE_GROUP(src/Models FILES ${MIA_MODELS_FILES})
 
 add_library(mia STATIC
   ${MIA_SRC_FILES}
   ${MIA_MATH_FILES}
   ${MIA_CORE_FILES}
   ${MIA_LAYERS_FILES}
+  ${MIA_MODELS_FILES}
 )
 
 target_include_directories(mia PUBLIC src/mia)
@@ -76,16 +84,22 @@ set(MIA_LAYERS_HELPERS_TEST_FILES
   src/mia_tests/Layers/Helpers/TestInputLayer.tests.cpp
 )
 
+set(MIA_MODELS_TEST_FILES
+  src/mia_tests/Models/Sequential.tests.cpp
+)
+
 SOURCE_GROUP(src/Core FILES ${MIA_CORE_TEST_FILES})
 SOURCE_GROUP(src/Maths FILES ${MIA_MATHS_TEST_FILES})
 SOURCE_GROUP(src/Layers FILES ${MIA_LAYERS_TEST_FILES})
 SOURCE_GROUP(src/Layers/Helpers FILES ${MIA_LAYERS_HELPERS_TEST_FILES})
+SOURCE_GROUP(src/Models FILES ${MIA_MODELS_TEST_FILES})
 
 add_library(mia_tests SHARED
   ${MIA_CORE_TEST_FILES}
   ${MIA_MATHS_TEST_FILES}
   ${MIA_LAYERS_TEST_FILES}
   ${MIA_LAYERS_HELPERS_TEST_FILES}
+  ${MIA_MODELS_TEST_FILES}
 )
 
 target_link_libraries(mia_tests mia)

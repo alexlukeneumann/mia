@@ -11,6 +11,8 @@ namespace mia
         InputLayer() = default;
         virtual ~InputLayer() = default;
 
+        virtual LayerType GetType() const override { return LayerType::Input; }
+
         // Converts the supplied inputData into the local m_Values matrix for use by another layer.
         virtual void SetInputData(NDArrayView<f32> const & inputData) = 0;
     };
