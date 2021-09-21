@@ -24,8 +24,11 @@ namespace mia
         NDArrayView(NDArrayView<Type> const & other);
         ~NDArrayView();
 
-        // Constructs a NDArrayView with the supplied number of dimensions and an array of NDArrayViewElements of the same length
+        // Constructs an NDArrayView with the supplied number of dimensions and an array of NDArrayViewElements of the same length
         NDArrayView(u32 numDimensions, NDArrayViewElement<Type> const * dimensions);
+        // Constructs an NDArrayView with the supplied number of NDArrayViewElements where the number of elements denotes the
+        // number of dimensions.
+        NDArrayView(std::initializer_list<NDArrayViewElement<Type>> const & elements);
 
         NDArrayView<Type> & operator = (NDArrayView<Type> const & other);
 
@@ -55,6 +58,18 @@ namespace mia
         {
             m_Dimensions = new NDArrayViewElement<Type>[numDimensions];
             memcpy(m_Dimensions, dimensions, numDimensions * sizeof(NDArrayViewElement<Type>));
+        }
+    }
+
+    template <class Type>
+    NDArrayView<Type>::NDArrayView(std::initializer_list<NDArrayViewElement<Type>> const & elements)
+        : m_NumDimensions(static_cast<u32>(elements.size()))
+        , m_Dimensions(nullptr)
+    {
+        if (m_NumDimensions > 0)
+        {
+            m_Dimensions = new NDArrayViewElement<Type>[m_NumDimensions];
+            memcpy(m_Dimensions, elements.begin(), m_NumDimensions * sizeof(NDArrayViewElement<Type>));
         }
     }
 

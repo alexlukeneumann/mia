@@ -16,13 +16,13 @@ namespace mia
         }
     }
 
-    Flatten::Flatten(u32 inputNumDimensions, DimensionLength * inputDimensionLengths)
-        : m_InputNumDimensions(inputNumDimensions)
+    Flatten::Flatten(std::initializer_list<DimensionLength> const & inputDimensionLengths)
+        : m_InputNumDimensions(static_cast<u32>(inputDimensionLengths.size()))
         , m_InputDimensionLengths(nullptr)
     {
         ASSERTMSG(m_InputNumDimensions != 0, "Cannot create a Flatten layer with expected data containing 0 dimensions.");
-        m_InputDimensionLengths = new u32[inputNumDimensions];
-        memcpy(m_InputDimensionLengths, inputDimensionLengths, m_InputNumDimensions * sizeof(u32));
+        m_InputDimensionLengths = new u32[m_InputNumDimensions];
+        memcpy(m_InputDimensionLengths, inputDimensionLengths.begin(), m_InputNumDimensions * sizeof(u32));
     }
 
     void Flatten::Compile(Layer const * prevLayer)

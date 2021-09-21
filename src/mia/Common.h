@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <initializer_list>
 
 namespace mia
 {

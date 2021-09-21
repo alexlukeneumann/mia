@@ -10,9 +10,9 @@ namespace mia
         Flatten();
         ~Flatten();
 
-        // Constructs a Flatten layer than expects inputNumDimensions number of dimensions with
-        // an array of DimensionLengths that must be the same length as inputNumDimensions
-        Flatten(u32 inputNumDimensions, DimensionLength * inputDimensionLengths);
+        // Constructs a Flatten layer using the supplied input shape.
+        // e.g. { 2, 2, 2 } describes a 2x2x2 dataset.
+        Flatten(std::initializer_list<DimensionLength> const & inputDimensionLengths);
 
         virtual void Compile(Layer const * prevLayer) override;
         virtual void Execute(Layer const * prevLayer) override { /* Flattening does not have weights associated with it. */ }

@@ -44,6 +44,30 @@ namespace mia
                 }
             }
 
+            TEST_METHOD(CanConstruct_WithInitializerList)
+            {
+                f32 xData[] = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
+                f32 yData[] = { 2.0f, 1.0f, 4.0f };
+                f32 zData[] = { 3.0f, 1.0f, 4.0f, 5.0f };
+
+                u32 const numDimensions = 3;
+                NDArrayView<f32> arrayView({
+                    { LENGTHOF(xData), xData },
+                    { LENGTHOF(yData), yData },
+                    { LENGTHOF(zData), zData }
+                });
+
+                Assert::AreEqual(numDimensions, arrayView.GetNumDimensions());
+
+                Assert::AreEqual(static_cast<u32>(LENGTHOF(xData)), arrayView.GetDimension(0).length);
+                Assert::AreEqual(static_cast<u32>(LENGTHOF(yData)), arrayView.GetDimension(1).length);
+                Assert::AreEqual(static_cast<u32>(LENGTHOF(zData)), arrayView.GetDimension(2).length);
+
+                Assert::AreEqual(&xData[0], arrayView.GetDimension(0).data);
+                Assert::AreEqual(&yData[0], arrayView.GetDimension(1).data);
+                Assert::AreEqual(&zData[0], arrayView.GetDimension(2).data);
+            }
+
             TEST_METHOD(CanCopyConstruct)
             {
                 f32 xData[] = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
