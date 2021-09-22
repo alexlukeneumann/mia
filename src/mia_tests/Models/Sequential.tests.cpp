@@ -107,7 +107,7 @@ namespace mia
                 DummyLayer * layer1 = new DummyLayer();
                 DummyLayer * layer2 = new DummyLayer();
 
-                Sequential model({
+                models::Sequential model({
                     layer0,
                     layer1,
                     layer2
@@ -133,7 +133,7 @@ namespace mia
 
                 // Artificially scope the model to cause a destruction
                 {
-                    Sequential model({
+                    models::Sequential model({
                         layer0,
                         layer1,
                         layer2
@@ -153,7 +153,7 @@ namespace mia
                 DummyLayer * layer1 = new DummyLayer();
                 DummyLayer * layer2 = new DummyLayer();
 
-                Sequential model({
+                models::Sequential model({
                     layer0,
                     layer1,
                     layer2
@@ -172,7 +172,7 @@ namespace mia
                 DummyLayer * layer1 = new DummyLayer();
                 DummyLayer * layer2 = new DummyLayer();
 
-                Sequential model({
+                models::Sequential model({
                     layer0,
                     layer1,
                     layer2

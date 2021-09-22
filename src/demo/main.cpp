@@ -9,7 +9,7 @@ int main()
     // The following code demonstrates using mia to model an XOR gate.
     activators::ActivatorType const type = activators::ActivatorType::Sigmoid;
 
-    Sequential model({
+    models::Sequential model({
         new Flatten({ 2 }, type),
         new Dense(2, type),
         new Dense(1, type)
