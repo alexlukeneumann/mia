@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Maths/Matrix.h"
+#include "Activators/Activators.h"
 
 namespace mia
 {
@@ -18,10 +19,13 @@ namespace mia
     class Layer
     {
     public:
-        Layer() = default;
+        Layer() = delete;
         Layer(Layer const & other) = delete;
         Layer(Layer && other) = delete;
         virtual ~Layer() = default;
+
+        // Constructs a layer.
+        Layer(activators::ActivatorType activatorType);
 
         // Sets up the layer.
         virtual void Compile(u32 seedValue, Layer const * prevLayer) = 0;
@@ -46,7 +50,10 @@ namespace mia
         Matrix const & GetValues() const;
 
     protected:
-        // A matrix storing each neuron's weights.
+        friend class Tests::LayerManipulator;
+
+    protected:
+        // A matrix storing each neuron connection pair's weights.
         // A neuron in the m_Values structure stores which neurons, in the previous layer, connect to it
         // in a row-majored fashion.
         // 
@@ -73,14 +80,21 @@ namespace mia
         // i.e. Matrix::Add(m_Values, m_Biases)
         Matrix m_Biases;
 
-        // A matrix storing the previous layer's neuron values multiplied by m_Weights structure.
+        // A matrix storing the previous layer's neuron values multiplied by m_Weights structure (+bias & activation).
         // This matrix is always expected to be one-dimensional in the height axis... i.e. Matrix(width: 1, height: n).
         // This allows for applying the summation, for a particular neuron, of the dot product of a previous neuron
         // and its weight easily... i.e. Matrix::Multiply(m_Weights, prevLayer.m_Values) 
         Matrix m_Values;
 
-    protected:
-        friend class Tests::LayerManipulator;
+    private:
+        // A matrix storing the previous layer's neuron values multiplied by m_Weights structure (+bias). This stores
+        // the same values as m_Values does but minus the activation function running on each neuron.
+        // We cache the neuron values prior to the activator being applied so that this value can be used within backpropagation
+        Matrix m_ValuesPriorActivator;
+
+        // An enum specifying which support activation function should be applied to every neuron's computed value
+        // during the execution of the layer.
+        activators::ActivatorType m_ActivatorType;
     };
 
     inline Matrix const & Layer::GetWeights() const
@@ -96,22 +110,6 @@ namespace mia
     inline Matrix const & Layer::GetValues() const
     {
         return m_Values;
-    }
-
-    inline void Layer::Execute(Layer const * prevLayer)
-    {
-        ASSERTMSG(nullptr != prevLayer, "prevLayer is not a valid ptr.");
-
-        // Base implemention:
-        // - Multiply the pre-filled m_Weights structure by the prevLayer's
-        // already calculated m_Values structure.
-        // - Add the m_Biases matrix to the m_Values structure
-        //
-        // The above two steps essentially summates the dot product of each neuron,
-        // in the previous layer, connected to a particular neuron with its weight and
-        // then adds the neuron's particular bias value to the final value for the neuron.
-        m_Values = Matrix::Multiply(m_Weights, prevLayer->GetValues());
-        m_Values = Matrix::Add(m_Values, m_Biases);
     }
 
     inline u32 Layer::GetNumNeurons() const

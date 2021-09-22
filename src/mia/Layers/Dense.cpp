@@ -2,8 +2,9 @@
 
 namespace mia
 {
-    Dense::Dense(u32 numNeurons)
-        : m_NumNeurons(numNeurons)
+    Dense::Dense(u32 numNeurons, activators::ActivatorType activatorType)
+        : Layer(activatorType)
+        , m_NumNeurons(numNeurons)
     {
     }
 

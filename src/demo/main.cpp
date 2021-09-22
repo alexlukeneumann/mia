@@ -2,27 +2,31 @@
 #include <Layers/Flatten.h>
 #include <Layers/Dense.h>
 
+using namespace mia;
+
 int main()
 {
     // The following code demonstrates using mia to model an XOR gate.
-    mia::Sequential model({
-        new mia::Flatten({ 2 }),
-        new mia::Dense(2),
-        new mia::Dense(1)
+    activators::ActivatorType const type = activators::ActivatorType::Sigmoid;
+
+    Sequential model({
+        new Flatten({ 2 }, type),
+        new Dense(2, type),
+        new Dense(1, type)
     });
 
     // Compile the model
-    model.Compile(mia::c_SeedValue);
+    model.Compile(c_SeedValue);
 
     // Create the input data & the models expected output
-    mia::f32 inputData[] = {
+    f32 inputData[] = {
         0.0f, 0.0f,
         1.0f, 0.0f,
         0.0f, 1.0f,
         1.0f, 1.0f
     };
 
-    mia::f32 expectedOutput[] = {
+    f32 expectedOutput[] = {
         0.0f,
         1.0f,
         1.0f,
@@ -30,14 +34,14 @@ int main()
     };
 
     // Train the model
-    mia::u32 const numIterations = 1000;
-    for (mia::u32 iIdx = 0; iIdx < numIterations; ++iIdx)
+    u32 const numIterations = 1000;
+    for (u32 iIdx = 0; iIdx < numIterations; ++iIdx)
     {
-        mia::u32 const numInputData = LENGTHOF(inputData) / 2;
-        for (mia::u32 i = 0; i < numInputData; ++i)
+        u32 const numInputData = LENGTHOF(inputData) / 2;
+        for (u32 i = 0; i < numInputData; ++i)
         {
             model.Train(
-                {{ static_cast<mia::DimensionLength>(2), &inputData[i * 2] }}, 
+                {{ static_cast<DimensionLength>(2), &inputData[i * 2] }}, 
                 { expectedOutput[i] }
             );
         }

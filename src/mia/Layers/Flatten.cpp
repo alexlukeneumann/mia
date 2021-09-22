@@ -2,21 +2,22 @@
 
 namespace mia
 {
+    Flatten::Flatten(std::initializer_list<DimensionLength> const & inputDimensionLengths, activators::ActivatorType activatorType)
+        : InputLayer(activatorType)
+        , m_InputNumDimensions(static_cast<u32>(inputDimensionLengths.size()))
+        , m_InputDimensionLengths(nullptr)
+    {
+        ASSERTMSG(m_InputNumDimensions != 0, "Cannot create a Flatten layer with expected data containing 0 dimensions.");
+        m_InputDimensionLengths = new u32[m_InputNumDimensions];
+        memcpy(m_InputDimensionLengths, inputDimensionLengths.begin(), m_InputNumDimensions * sizeof(u32));
+    }
+
     Flatten::~Flatten()
     {
         if (nullptr != m_InputDimensionLengths)
         {
             delete[] m_InputDimensionLengths;
         }
-    }
-
-    Flatten::Flatten(std::initializer_list<DimensionLength> const & inputDimensionLengths)
-        : m_InputNumDimensions(static_cast<u32>(inputDimensionLengths.size()))
-        , m_InputDimensionLengths(nullptr)
-    {
-        ASSERTMSG(m_InputNumDimensions != 0, "Cannot create a Flatten layer with expected data containing 0 dimensions.");
-        m_InputDimensionLengths = new u32[m_InputNumDimensions];
-        memcpy(m_InputDimensionLengths, inputDimensionLengths.begin(), m_InputNumDimensions * sizeof(u32));
     }
 
     void Flatten::Compile(u32 seedValue, Layer const * prevLayer)
@@ -58,7 +59,7 @@ namespace mia
         for (u32 dIdx = 0; dIdx < inputData.GetNumDimensions(); ++dIdx)
         {
             NDArrayViewElement<f32> const & elementView = inputData.GetDimension(dIdx);
-            m_Values.Copy(0, columnOffset, elementView.data, elementView.length * sizeof(f32));
+            m_Values.Copy(0, columnOffset, elementView.data, elementView.length);
             columnOffset += elementView.length;
         }
     }

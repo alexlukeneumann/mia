@@ -5,7 +5,8 @@ namespace mia
     namespace Tests
     {
         TestInputLayer::TestInputLayer(u32 numNeurons)
-            : m_NumNeurons(numNeurons)
+            : InputLayer(activators::ActivatorType::ReLU)
+            , m_NumNeurons(numNeurons)
         {
         }
 

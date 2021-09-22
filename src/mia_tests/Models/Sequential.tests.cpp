@@ -26,6 +26,11 @@ namespace mia
         class DummyInputLayer : public InputLayer, public DummyBaseLayer
         {
         public:
+            DummyInputLayer()
+                : InputLayer(activators::ActivatorType::None)
+            {
+            }
+
             virtual ~DummyInputLayer()
             {
                 m_DestructorCalls++;
@@ -54,7 +59,10 @@ namespace mia
         class DummyLayer : public Layer, public DummyBaseLayer
         {
         public:
-            DummyLayer() = default;
+            DummyLayer()
+                : Layer(activators::ActivatorType::None)
+            {
+            }
 
             virtual ~DummyLayer()
             {

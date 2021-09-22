@@ -8,7 +8,10 @@ namespace mia
     class InputLayer : public Layer
     {
     public:
-        InputLayer() = default;
+        InputLayer(activators::ActivatorType activatorType)
+            : Layer(activatorType)
+        {}
+
         virtual ~InputLayer() = default;
 
         virtual LayerType GetType() const override { return LayerType::Input; }
