@@ -2,7 +2,7 @@
 
 namespace mia
 {
-    namespace Tests
+    namespace tests
     {
         Matrix & LayerManipulator::GetWeightsMatrix(layers::Layer & layer)
         {

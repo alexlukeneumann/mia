@@ -8,7 +8,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace mia
 {
-    namespace Tests
+    namespace tests
     {
         static u32 constexpr c_TestSeedValue = 0;
 

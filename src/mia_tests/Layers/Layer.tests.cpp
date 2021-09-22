@@ -6,7 +6,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace mia
 {
-    namespace Tests
+    namespace tests
     {
         class TestNoActivatorLayer : public layers::Layer
         {

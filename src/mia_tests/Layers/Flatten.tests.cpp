@@ -7,7 +7,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace mia
 {
-    namespace Tests
+    namespace tests
     {
         TEST_CLASS(FlattenTests)
         {

@@ -4,7 +4,7 @@
 
 namespace mia
 {
-    namespace Tests
+    namespace tests
     {
         class TestInputLayer final : public layers::InputLayer
         {

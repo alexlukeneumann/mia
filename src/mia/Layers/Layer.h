@@ -5,7 +5,7 @@
 
 namespace mia
 {
-    namespace Tests
+    namespace tests
     {
         class LayerManipulator;
     }
@@ -52,7 +52,7 @@ namespace mia
             Matrix const & GetValues() const;
 
         protected:
-            friend class Tests::LayerManipulator;
+            friend class tests::LayerManipulator;
 
         protected:
             // A matrix storing each neuron connection pair's weights.
