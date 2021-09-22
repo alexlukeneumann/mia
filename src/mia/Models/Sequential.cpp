@@ -7,7 +7,7 @@ namespace mia
 {
     namespace models
     {
-        Sequential::Sequential(std::initializer_list<Layer *> const & layers)
+        Sequential::Sequential(std::initializer_list<layers::Layer *> const & layers)
             : m_NumLayers(static_cast<u32>(layers.size()))
             , m_Layers()
         {
@@ -43,11 +43,11 @@ namespace mia
         void Sequential::Compile(u32 seedValue)
         {
             ASSERTMSG(m_NumLayers > 0, "Sequential Model cannot have zero layers.");
-            ASSERTMSG(LayerType::Input == m_Layers[0]->GetType(), "Sequential Model's first layer isn't an input layer.");
+            ASSERTMSG(layers::LayerType::Input == m_Layers[0]->GetType(), "Sequential Model's first layer isn't an input layer.");
 
             u32 layerIndex = 0;
-            Layer * layer = m_Layers[layerIndex];
-            Layer * prevLayer = nullptr;
+            layers::Layer * layer = m_Layers[layerIndex];
+            layers::Layer * prevLayer = nullptr;
             while (nullptr != layer)
             {
                 layer->Compile(seedValue, prevLayer);
@@ -59,7 +59,7 @@ namespace mia
         void Sequential::Train(NDArrayView<f32> const & inputData, std::initializer_list<f32> const & expectedOutput)
         {
             // Pass the input data into the first layer
-            static_cast<InputLayer *>(m_Layers[0])->SetInputData(inputData);
+            static_cast<layers::InputLayer *>(m_Layers[0])->SetInputData(inputData);
 
             // Execute the current model based on the new input
             ForwardPropagation();
@@ -71,8 +71,8 @@ namespace mia
         {
             // Call execute on each layer sequentially (this propagates foward through the model).
             u32 layerIndex = 0;
-            Layer * layer = m_Layers[layerIndex];
-            Layer * prevLayer = nullptr;
+            layers::Layer * layer = m_Layers[layerIndex];
+            layers::Layer * prevLayer = nullptr;
             while (nullptr != layer)
             {
                 layer->Execute(prevLayer);

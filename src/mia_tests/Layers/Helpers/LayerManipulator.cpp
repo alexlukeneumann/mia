@@ -4,17 +4,17 @@ namespace mia
 {
     namespace Tests
     {
-        Matrix & LayerManipulator::GetWeightsMatrix(Layer & layer)
+        Matrix & LayerManipulator::GetWeightsMatrix(layers::Layer & layer)
         {
             return layer.m_Weights;
         }
 
-        Matrix & LayerManipulator::GetBiasesMatrix(Layer & layer)
+        Matrix & LayerManipulator::GetBiasesMatrix(layers::Layer & layer)
         {
             return layer.m_Biases;
         }
 
-        Matrix & LayerManipulator::GetValuesMatrix(Layer & layer)
+        Matrix & LayerManipulator::GetValuesMatrix(layers::Layer & layer)
         {
             return layer.m_Values;
         }

@@ -6,7 +6,7 @@ namespace mia
 {
     namespace Tests
     {
-        class TestInputLayer final : public InputLayer
+        class TestInputLayer final : public layers::InputLayer
         {
         public:
             TestInputLayer() = delete;

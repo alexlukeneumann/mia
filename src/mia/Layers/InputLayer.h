@@ -5,18 +5,21 @@
 
 namespace mia
 {
-    class InputLayer : public Layer
+    namespace layers
     {
-    public:
-        InputLayer(activators::ActivatorType activatorType)
-            : Layer(activatorType)
-        {}
+        class InputLayer : public Layer
+        {
+        public:
+            InputLayer(activators::ActivatorType activatorType)
+                : Layer(activatorType)
+            {}
 
-        virtual ~InputLayer() = default;
+            virtual ~InputLayer() = default;
 
-        virtual LayerType GetType() const override { return LayerType::Input; }
+            virtual LayerType GetType() const override { return LayerType::Input; }
 
-        // Converts the supplied inputData into the local m_Values matrix for use by another layer.
-        virtual void SetInputData(NDArrayView<f32> const & inputData) = 0;
-    };
+            // Converts the supplied inputData into the local m_Values matrix for use by another layer.
+            virtual void SetInputData(NDArrayView<f32> const & inputData) = 0;
+        };
+    }
 }

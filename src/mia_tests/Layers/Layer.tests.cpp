@@ -8,7 +8,7 @@ namespace mia
 {
     namespace Tests
     {
-        class TestNoActivatorLayer : public Layer
+        class TestNoActivatorLayer : public layers::Layer
         {
         public:
             TestNoActivatorLayer()
@@ -16,10 +16,10 @@ namespace mia
             {
             }
 
-            virtual void Compile(u32 seedValue, Layer const * prevLayer) {}
+            virtual void Compile(u32 seedValue, layers::Layer const * prevLayer) {}
         };
 
-        class TestReLUActivatorLayer : public Layer
+        class TestReLUActivatorLayer : public layers::Layer
         {
         public:
             TestReLUActivatorLayer()
@@ -27,7 +27,7 @@ namespace mia
             {
             }
 
-            virtual void Compile(u32 seedValue, Layer const * prevLayer) {}
+            virtual void Compile(u32 seedValue, layers::Layer const * prevLayer) {}
         };
 
         TEST_CLASS(LayerTests)

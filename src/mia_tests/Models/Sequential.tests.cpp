@@ -23,7 +23,7 @@ namespace mia
 
         u32 DummyBaseLayer::m_DestructorCalls = 0;
 
-        class DummyInputLayer : public InputLayer, public DummyBaseLayer
+        class DummyInputLayer : public layers::InputLayer, public DummyBaseLayer
         {
         public:
             DummyInputLayer()
@@ -36,13 +36,13 @@ namespace mia
                 m_DestructorCalls++;
             }
 
-            virtual void Compile(u32 seedValue, Layer const * prevLayer) override
+            virtual void Compile(u32 seedValue, layers::Layer const * prevLayer) override
             {
                 Assert::IsNull(prevLayer);
                 m_CompileCalls++;
             }
 
-            virtual void Execute(Layer const * prevLayer) override
+            virtual void Execute(layers::Layer const * prevLayer) override
             {
                 Assert::IsNull(prevLayer);
                 m_ExecuteCalls++;
@@ -56,7 +56,7 @@ namespace mia
             u32 m_SetInputDataCalls = 0;
         };
 
-        class DummyLayer : public Layer, public DummyBaseLayer
+        class DummyLayer : public layers::Layer, public DummyBaseLayer
         {
         public:
             DummyLayer()
@@ -69,7 +69,7 @@ namespace mia
                 m_DestructorCalls++;
             }
 
-            virtual void Compile(u32 seedValue, Layer const * prevLayer) override
+            virtual void Compile(u32 seedValue, layers::Layer const * prevLayer) override
             {
                 DummyBaseLayer const * prev = dynamic_cast<DummyBaseLayer const *>(prevLayer);
                 if (nullptr != prev)
@@ -82,7 +82,7 @@ namespace mia
                 Assert::IsTrue(false, L"Unknown previous layer in test.");
             }
 
-            virtual void Execute(Layer const * prevLayer) override
+            virtual void Execute(layers::Layer const * prevLayer) override
             {
                 DummyBaseLayer const * prev = dynamic_cast<DummyBaseLayer const *>(prevLayer);
                 if (nullptr != prev)

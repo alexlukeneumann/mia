@@ -10,9 +10,9 @@ int main()
     activators::ActivatorType const type = activators::ActivatorType::Sigmoid;
 
     models::Sequential model({
-        new Flatten({ 2 }, type),
-        new Dense(2, type),
-        new Dense(1, type)
+        new layers::Flatten({ 2 }, type),
+        new layers::Dense(2, type),
+        new layers::Dense(1, type)
     });
 
     // Compile the model

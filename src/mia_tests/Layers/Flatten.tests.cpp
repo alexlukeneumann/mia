@@ -17,7 +17,7 @@ namespace mia
             TEST_METHOD(Compile_ReservesCorrectSpaceInValuesMatrix)
             {
                 u32 const numDimensions = 3;
-                Flatten layer({3, 3, 2});
+                layers::Flatten layer({3, 3, 2});
 
                 Assert::AreEqual(static_cast<u32>(0), layer.GetNumNeurons());
 
@@ -35,7 +35,7 @@ namespace mia
             {
                 // Create layer
                 u32 const numDimensions = 3;
-                Flatten layer({3, 3, 2});
+                layers::Flatten layer({3, 3, 2});
 
                 Assert::AreEqual(static_cast<u32>(0), layer.GetNumNeurons());
 
@@ -76,7 +76,7 @@ namespace mia
             {
                 // Create layer
                 u32 const numDimensions = 3;
-                Flatten layer({3, 3, 2});
+                layers::Flatten layer({3, 3, 2});
 
                 Assert::AreEqual(static_cast<u32>(0), layer.GetNumNeurons());
 

@@ -24,7 +24,7 @@ namespace mia
 
                 // Setup this layer
                 u32 const layerNumNeurons = 128;
-                Dense layer(layerNumNeurons);
+                layers::Dense layer(layerNumNeurons);
                 layer.Compile(c_TestSeedValue, &prevLayer);
 
                 // Check values matrix is populated correctly
@@ -45,7 +45,7 @@ namespace mia
 
                 // Setup this layer
                 u32 const layerNumNeurons = 128;
-                Dense layer(layerNumNeurons);
+                layers::Dense layer(layerNumNeurons);
                 layer.Compile(c_TestSeedValue, &prevLayer);
 
                 // Check weights matrix is populated correctly
@@ -65,7 +65,7 @@ namespace mia
 
                 // Setup this layer
                 u32 const layerNumNeurons = 128;
-                Dense layer(layerNumNeurons);
+                layers::Dense layer(layerNumNeurons);
                 layer.Compile(c_TestSeedValue, &prevLayer);
 
                 // Check values matrix is populated correctly
@@ -86,7 +86,7 @@ namespace mia
 
                 // Setup this layer
                 u32 const layerNumNeurons = 128;
-                Dense layer(layerNumNeurons);
+                layers::Dense layer(layerNumNeurons);
                 layer.Compile(c_TestSeedValue, &prevLayer);
 
                 // Check weights matrix is populated correctly
@@ -109,7 +109,7 @@ namespace mia
 
                 // Setup this layer
                 u32 const layerNumNeurons = 128;
-                Dense layer(layerNumNeurons);
+                layers::Dense layer(layerNumNeurons);
                 layer.Compile(c_TestSeedValue, &prevLayer);
 
                 // Check biases matrix is populated correctly
