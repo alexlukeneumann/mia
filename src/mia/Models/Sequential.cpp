@@ -56,7 +56,40 @@ namespace mia
             }
         }
 
-        void Sequential::Train(NDArrayView<f32> const & inputData, std::initializer_list<f32> const & expectedOutput)
+        f32 Sequential::Train(NDArrayView<f32> const & inputData, std::initializer_list<f32> const & expectedOutput)
+        {
+            ASSERTMSG(expectedOutput.size() == m_Layers[m_NumLayers - 1]->GetNumNeurons(), "Number of expected output values differs from the number of output neurons.");
+
+            // Pass the input data into the first layer
+            static_cast<layers::InputLayer *>(m_Layers[0])->SetInputData(inputData);
+
+            // Execute the current model based on the new input
+            ForwardPropagation();
+
+            // Evaluate how to change each weight & bias in order to minimise the error 
+            // (difference in the computed value and expected value for each neuron).
+            // TODO: Backpropagation is expensive to run every time, we could reduce the cost by
+            // doing mini-batches.
+            BackPropagation(expectedOutput);
+
+            // Calculate MSE
+            f32 meanSquareError = 0.0f;
+            {
+                Matrix const & outputValues = m_Layers[m_NumLayers - 1]->GetValues();
+
+                u32 rIdx = 0;
+                for (auto iter = expectedOutput.begin(); iter != expectedOutput.end(); ++iter)
+                {
+                    meanSquareError += pow((outputValues.GetElement(rIdx++, 0) - *iter), 2);
+                }
+
+                meanSquareError /= static_cast<f32>(expectedOutput.size());
+            }
+
+            return meanSquareError;
+        }
+
+        Matrix Sequential::Execute(NDArrayView<f32> const & inputData)
         {
             // Pass the input data into the first layer
             static_cast<layers::InputLayer *>(m_Layers[0])->SetInputData(inputData);
@@ -64,7 +97,7 @@ namespace mia
             // Execute the current model based on the new input
             ForwardPropagation();
 
-            // TODO: Backpropagation
+            return m_Layers[m_NumLayers - 1]->GetValues();
         }
 
         void Sequential::ForwardPropagation()
@@ -76,8 +109,36 @@ namespace mia
             while (nullptr != layer)
             {
                 layer->Execute(prevLayer);
+
                 prevLayer = layer;
                 layer = m_Layers[++layerIndex];
+            }
+        }
+
+        void Sequential::BackPropagation(std::initializer_list<f32> const & expectedOutput)
+        {
+            // Convert the expected output to a matrix
+            Matrix expectedValues = Matrix(1, static_cast<u32>(expectedOutput.size()));
+            {
+                u32 rIdx = 0;
+                for (auto iter = expectedOutput.begin(); iter != expectedOutput.end(); ++iter)
+                {
+                    expectedValues.GetElement(rIdx++, 0) = *iter;
+                }
+            }
+
+            u32 layerIndex = m_NumLayers - 1;
+            layers::Layer * layer = m_Layers[layerIndex];
+            layers::Layer * prevLayer = m_Layers[layerIndex - 1];
+            Matrix cost = std::move(expectedValues);
+            bool isOutputLayer = true;
+            while (nullptr != prevLayer)
+            {
+                cost = layer->Backpropagation(cost, isOutputLayer, prevLayer);
+
+                prevLayer = (layerIndex >= 2) ? m_Layers[layerIndex - 2] : nullptr;
+                layer = m_Layers[--layerIndex];
+                isOutputLayer = false;
             }
         }
     }

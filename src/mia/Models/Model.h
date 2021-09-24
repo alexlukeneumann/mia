@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "Core/NDArrayView.h"
+#include "Maths/Matrix.h"
 
 namespace mia
 {
@@ -22,7 +23,9 @@ namespace mia
             // Executes the current state of the model on the supplied inputData and then
             // adjusts the trainable parameters based on how close the output result is to
             // the supplied expectedOutput.
-            virtual void Train(NDArrayView<f32> const & inputData, std::initializer_list<f32> const & expectedOutput) = 0;
+            virtual f32 Train(NDArrayView<f32> const & inputData, std::initializer_list<f32> const & expectedOutput) = 0;
+
+            virtual Matrix Execute(NDArrayView<f32> const & inputData) = 0;
         };
     }
 }

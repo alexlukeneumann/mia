@@ -27,7 +27,7 @@ namespace mia
         {
         public:
             DummyInputLayer()
-                : InputLayer(activators::ActivatorType::None)
+                : InputLayer(activators::ActivatorType::ReLU)
             {
             }
 
@@ -60,7 +60,7 @@ namespace mia
         {
         public:
             DummyLayer()
-                : Layer(activators::ActivatorType::None)
+                : Layer(activators::ActivatorType::ReLU)
             {
             }
 

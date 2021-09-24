@@ -11,7 +11,6 @@ namespace mia
     {
         enum class ActivatorType : u8
         {
-            None,
             ReLU,
             Sigmoid
         };
@@ -21,9 +20,24 @@ namespace mia
         {
             switch (type)
             {
-                case ActivatorType::None:       return nullptr;
                 case ActivatorType::ReLU:       return ReLU;
                 case ActivatorType::Sigmoid:    return Sigmoid;
+
+                default:
+                    ASSERTMSG(false, "Unknown ActivatorType.");
+                    break;
+            }
+
+            return nullptr;
+        }
+
+        typedef f32 (*ActivatorDerivative)(f32 x);
+        static ActivatorDerivative GetActivatorDerivative(ActivatorType type)
+        {
+            switch (type)
+            {
+                case ActivatorType::ReLU:       return ReLUDerivative;
+                case ActivatorType::Sigmoid:    return SigmoidDerivative;
 
                 default:
                     ASSERTMSG(false, "Unknown ActivatorType.");

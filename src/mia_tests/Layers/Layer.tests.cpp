@@ -8,17 +8,6 @@ namespace mia
 {
     namespace tests
     {
-        class TestNoActivatorLayer : public layers::Layer
-        {
-        public:
-            TestNoActivatorLayer()
-                : Layer(activators::ActivatorType::None)
-            {
-            }
-
-            virtual void Compile(u32 seedValue, layers::Layer const * prevLayer) {}
-        };
-
         class TestReLUActivatorLayer : public layers::Layer
         {
         public:
@@ -37,8 +26,8 @@ namespace mia
         public:
             TEST_METHOD(BaseExecute_CalculatesTheCorrectSummationOfDotProducts_ForEachNeuron)
             {
-                TestNoActivatorLayer prevLayer;
-                TestNoActivatorLayer layer;
+                TestReLUActivatorLayer prevLayer;
+                TestReLUActivatorLayer layer;
 
                 // Initialise the previous layer's neuron values matrix
                 Matrix & prevLayerValues = LayerManipulator::GetValuesMatrix(prevLayer);
@@ -87,8 +76,8 @@ namespace mia
 
             TEST_METHOD(BaseExecute_CalculatesTheCorrectSummationOfDotProducts_AndAddsBias_ForEachNeuron)
             {
-                TestNoActivatorLayer prevLayer;
-                TestNoActivatorLayer layer;
+                TestReLUActivatorLayer prevLayer;
+                TestReLUActivatorLayer layer;
 
                 // Initialise the previous layer's neuron values matrix
                 Matrix & prevLayerValues = LayerManipulator::GetValuesMatrix(prevLayer);
@@ -137,7 +126,7 @@ namespace mia
 
             TEST_METHOD(BaseExecute_CalculatesTheCorrectSummationOfDotProducts_AndCallsActivator_ForEachNeuron)
             {
-                TestNoActivatorLayer prevLayer;
+                TestReLUActivatorLayer prevLayer;
                 TestReLUActivatorLayer layer;
 
                 // Initialise the previous layer's neuron values matrix

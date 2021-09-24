@@ -434,6 +434,64 @@ namespace mia
                     }
                 }
             }
+
+            TEST_METHOD(CanSubtract_SameDimensions)
+            {
+                u32 const width = 3;
+                u32 const height = 2;
+
+                f32 aValues[] = {
+                    11.0f, 12.0f, 13.0f,
+                    14.0f, 15.0f, 16.0f
+                };
+
+                f32 bValues[] = {
+                    1.0f, 2.0f, 3.0f,
+                    4.0f, 5.0f, 6.0f
+                };
+
+                Matrix a(width, height, aValues);
+                Matrix b(width, height, bValues);
+
+                Matrix result = Matrix::Subtract(a, b);
+
+                Assert::AreEqual(width, result.GetWidth());
+                Assert::AreEqual(height, result.GetHeight());
+
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
+                {
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
+                    {
+                        Assert::AreEqual(10.0f, result.GetElement(rIdx, cIdx));
+                    }
+                }
+            }
+
+            TEST_METHOD(CanMultiply_ByAScalar)
+            {
+                u32 const width = 3;
+                u32 const height = 2;
+
+                f32 values[] = {
+                    11.0f, 12.0f, 13.0f,
+                    14.0f, 15.0f, 16.0f
+                };
+
+                Matrix m(width, height, values);
+
+                Matrix result = Matrix::Multiply(m, 10.0f);
+
+                Assert::AreEqual(width, result.GetWidth());
+                Assert::AreEqual(height, result.GetHeight());
+
+                for (u32 rIdx = 0; rIdx < height; ++rIdx)
+                {
+                    for (u32 cIdx = 0; cIdx < width; ++cIdx)
+                    {
+                        Assert::AreEqual(values[(rIdx * width) + cIdx] * 10.0f, result.GetElement(rIdx, cIdx));
+                    }
+                }
+            }
         };
     }
 }

@@ -20,5 +20,10 @@ namespace mia
         {
             return 1 / (1 + exp(-x));
         }
+
+        static f32 SigmoidDerivative(f32 x)
+        {
+            return Sigmoid(x) * (1.0f - Sigmoid(x));
+        }
     }
 }

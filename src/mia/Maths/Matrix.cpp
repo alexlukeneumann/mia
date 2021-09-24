@@ -125,6 +125,11 @@ namespace mia
 
     Matrix Matrix::Add(Matrix const & a, Matrix const & b)
     {
+        if ((a.GetCapacity() == 0) && (b.GetCapacity() == 0))
+        {
+            return Matrix();
+        }
+
         ASSERTMSG(a.GetWidth() == b.GetWidth(), "Cannot add matrix a & b. Invalid dimensions.");
         ASSERTMSG(a.GetHeight() == b.GetHeight(), "Cannot add matrix a & b. Invalid dimensions.");
 
@@ -134,6 +139,27 @@ namespace mia
         for (u64 eIdx = 0; eIdx < capacity; ++eIdx)
         {
             result.m_Data[eIdx] = a.m_Data[eIdx] + b.m_Data[eIdx];
+        }
+
+        return result;
+    }
+
+    Matrix Matrix::Subtract(Matrix const & a, Matrix const & b)
+    {
+        if ((a.GetCapacity() == 0) && (b.GetCapacity() == 0))
+        {
+            return Matrix();
+        }
+
+        ASSERTMSG(a.GetWidth() == b.GetWidth(), "Cannot subtract matrix a & b. Invalid dimensions.");
+        ASSERTMSG(a.GetHeight() == b.GetHeight(), "Cannot subtract matrix a & b. Invalid dimensions.");
+
+        Matrix result(a.GetWidth(), b.GetHeight());
+
+        u64 const capacity = a.GetCapacity();
+        for (u64 eIdx = 0; eIdx < capacity; ++eIdx)
+        {
+            result.m_Data[eIdx] = a.m_Data[eIdx] - b.m_Data[eIdx];
         }
 
         return result;
@@ -195,6 +221,19 @@ namespace mia
                     result.m_Data[resultOffset + cIdx] += aVal * bVal;
                 }
             }
+        }
+
+        return result;
+    }
+
+    Matrix Matrix::Multiply(Matrix const & a, f32 scalar)
+    {
+        Matrix result(a.GetWidth(), a.GetHeight());
+
+        u64 const capacity = a.GetCapacity();
+        for (u64 eIdx = 0; eIdx < capacity; ++eIdx)
+        {
+            result.m_Data[eIdx] = a.m_Data[eIdx] * scalar;
         }
 
         return result;

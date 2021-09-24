@@ -45,11 +45,16 @@ namespace mia
         // row-majored as the supplied matrix b will be transposed during the multiply for better
         // cache-miss performance.
         static Matrix Multiply(Matrix const & a, Matrix const & b);
+        // Multiplies matrix a by the supplied scalar value and returns the result.
+        static Matrix Multiply(Matrix const & a, f32 scalar);
         // Transposes the supplied matrix and returns the result
         static Matrix Transpose(Matrix const & m);
         // Adds matrix a & b together and returns the result. Both a & b are expected to be the
         // exact same dimensions.
         static Matrix Add(Matrix const & a, Matrix const & b);
+        // Subtracts matrix b from a and returns the result. Both a & b are expected to be the
+        // exact same dimensions.
+        static Matrix Subtract(Matrix const & a, Matrix const & b);
 
         bool operator == (Matrix const & other) const;
         bool operator != (Matrix const & other) const;

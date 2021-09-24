@@ -24,10 +24,12 @@ namespace mia
             Sequential(std::initializer_list<layers::Layer *> const & layers);
 
             virtual void Compile(u32 seedValue) override;
-            virtual void Train(NDArrayView<f32> const & inputData, std::initializer_list<f32> const & expectedOutput) override;
+            virtual f32 Train(NDArrayView<f32> const & inputData, std::initializer_list<f32> const & expectedOutput) override;
+            virtual Matrix Execute(NDArrayView<f32> const & inputData) override;
 
         private:
             void ForwardPropagation();
+            void BackPropagation(std::initializer_list<f32> const & expectedOutput);
 
         private:
             static u32 constexpr c_MaxNumLayers = 256;

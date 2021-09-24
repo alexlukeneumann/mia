@@ -36,6 +36,10 @@ namespace mia
             // the computed values within the m_Values matrix.
             virtual void Execute(Layer const * prevLayer);
 
+            // Uses 'stochastic desecent' to calculate how the weights & biases within this particular
+            // layer should change in order to produce a smaller cost.
+            virtual Matrix Backpropagation(Matrix const & expectedOutput, bool isOutputLayer, Layer const * prevLayer);
+
             // Returns the type of this layer.
             virtual LayerType GetType() const { return LayerType::Generic; }
 
@@ -50,6 +54,11 @@ namespace mia
             Matrix const & GetBiases() const;
             // Returns the 1D matrix representing the computed neuron values for this layer.
             Matrix const & GetValues() const;
+            // Returns the 1D matrix representing the compute neuron values for this layer before the layer's
+            // activation function is ran.
+            Matrix const & GetValuesPriorActivator() const;
+            // Returns the activation function type for this layer.
+            activators::ActivatorType GetActivatorType() const;
 
         protected:
             friend class tests::LayerManipulator;
@@ -97,6 +106,10 @@ namespace mia
             // An enum specifying which support activation function should be applied to every neuron's computed value
             // during the execution of the layer.
             activators::ActivatorType m_ActivatorType;
+
+        private: // TODO: Clean
+            Matrix m_PrevWeightGradients;
+            Matrix m_PrevBiasGradients;
         };
 
         inline Matrix const & Layer::GetWeights() const
@@ -117,6 +130,16 @@ namespace mia
         inline u32 Layer::GetNumNeurons() const
         {
             return static_cast<u32>(m_Values.GetCapacity());
+        }
+
+        inline Matrix const & Layer::GetValuesPriorActivator() const
+        {
+            return m_ValuesPriorActivator;
+        }
+
+        inline activators::ActivatorType Layer::GetActivatorType() const
+        {
+            return m_ActivatorType;
         }
     }
 }
